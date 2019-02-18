@@ -12,7 +12,7 @@ from openvino.inference_engine import IENetwork, IEPlugin
 from line_notify import send_message
 
 
-LOG_FILE = os.environ['HOME'] + 'deeplens_agent.log'
+LOG_FILE = os.environ['HOME'] + '/deeplens_agent.log'
 MODEL = os.environ['HOME'] + \
         '/models/openvino/googlenet_fc_coco_SSD_300x300/FP16/deploy.xml'
 DEVICE = 'GPU'
@@ -21,22 +21,31 @@ CONF_THRESHOLD = 0.3
 VIDEO_IN = '/opt/awscam/out/ch2_out.mjpeg'
 IMG_W = 640
 IMG_H = 360
-DO_IMSHOW = True
+DO_IMSHOW = False
 TMP_IMG = '/tmp/deeplens_agent.jpg'
+LINE_TOKEN = os.environ['LINE_TOKEN']
 EVENT_AVERAGE = 0.0
 EVENT_TRIGGERED = False
 
 
-def check_notify(detected):
+def check_notify(detected, frame):
     """Check whether to send a notification based on detection status"""
     global EVENT_AVERAGE, EVENT_TRIGGERED
     EVENT_AVERAGE = EVENT_AVERAGE * 0.95 + float(detected) * 0.05
     if EVENT_AVERAGE >= 0.8 and not EVENT_TRIGGERED:
         log.info('Event triggered!')
-        print('Event triggered!')
+        EVENT_TRIGGERED = True
+        cv2.imwrite(TMP_IMG, frame)
+        status = send_message(LINE_TOKEN,
+                              'D5D01 meeting room is occupied.',
+                              TMP_IMG)
+        log.info('HTTP request status = {}'.format(status))
     if EVENT_AVERAGE < 0.2 and EVENT_TRIGGERED:
         log.info('Event relieved.')
-        print('Event relieved.')
+        EVENT_TRIGGERED = False
+        status = send_message(LINE_TOKEN,
+                              'D5D01 meeting room is empty now...')
+        log.info('HTTP request status = {}'.format(status))
 
 
 def main():
@@ -103,13 +112,13 @@ def main():
                     # Draw bounding box
                     color = (0, 255, 0)
                     cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), color, 2)
-            check_notify(event_detected)
+            check_notify(event_detected, frame)
         if DO_IMSHOW:
             cv2.imshow("Detection Results", frame)
+            if cv2.waitKey(1) == 27:
+                break
         cur_request_id, next_request_id = next_request_id, cur_request_id
         frame = next_frame
-        if cv2.waitKey(1) == 27:
-            break
 
     cv2.destroyAllWindows()
     del exec_net
