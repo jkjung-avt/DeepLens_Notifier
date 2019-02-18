@@ -1,0 +1,11 @@
+[Unit]
+Description=DeepLens Notify Agent
+After=network.target
+
+[Service]
+User=aws_cam
+Type=oneshot
+ExecStart=/home/aws_cam/project/DeepLens_Notifier/startup.sh
+
+[Install]
+WantedBy=multi-user.target

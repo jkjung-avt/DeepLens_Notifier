@@ -17,7 +17,7 @@ MODEL = os.environ['HOME'] + \
         '/models/openvino/googlenet_fc_coco_SSD_300x300/FP16/deploy.xml'
 DEVICE = 'GPU'
 DETECT_CLASS = (1,)  # COCO class 1: 'person'
-CONF_THRESHOLD = 0.3
+CONF_THRESHOLD = 0.2
 VIDEO_IN = '/opt/awscam/out/ch2_out.mjpeg'
 IMG_W = 640
 IMG_H = 360
@@ -25,7 +25,7 @@ DO_IMSHOW = False
 TMP_IMG = '/tmp/deeplens_agent.jpg'
 LINE_TOKEN = os.environ['LINE_TOKEN']
 EVENT_AVERAGE = 0.0
-EVENT_TRIGGERED = False
+EVENT_TRIGGERED = True
 
 
 def check_notify(detected, frame):
