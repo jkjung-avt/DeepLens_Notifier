@@ -16,10 +16,7 @@ URL = 'https://notify-api.line.me/api/notify'
 
 def send_message(token, msg, img=''):
     """Send a LINE Notify message (with or without an image)"""
-    headers = {
-        'Authorization': 'Bearer ' + token,
-        #'Content-Type' : 'application/x-www-form-urlencoded'
-    }
+    headers = {'Authorization': 'Bearer ' + token}
     payload = {'message': msg}
     if img:
         file = {'imageFile': open(img, 'rb')}
