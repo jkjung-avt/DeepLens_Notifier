@@ -17,10 +17,10 @@ MODEL = os.environ['HOME'] + \
         '/models/openvino/googlenet_fc_coco_SSD_300x300/FP16/deploy.xml'
 DEVICE = 'GPU'
 DETECT_CLASS = (1,)  # COCO class 1: 'person'
-CONF_THRESHOLD = 0.2
+CONF_THRESHOLD = 0.35
 VIDEO_IN = '/opt/awscam/out/ch2_out.mjpeg'
-IMG_W = 640
-IMG_H = 360
+IMG_W = 1280
+IMG_H = 720
 DO_IMSHOW = False
 TMP_IMG = '/tmp/deeplens_agent.jpg'
 LINE_TOKEN = os.environ['LINE_TOKEN']
@@ -31,7 +31,7 @@ EVENT_TRIGGERED = True
 def check_notify(detected, frame):
     """Check whether to send a notification based on detection status"""
     global EVENT_AVERAGE, EVENT_TRIGGERED
-    EVENT_AVERAGE = EVENT_AVERAGE * 0.95 + float(detected) * 0.05
+    EVENT_AVERAGE = EVENT_AVERAGE * 0.97 + float(detected) * 0.03
     if EVENT_AVERAGE >= 0.8 and not EVENT_TRIGGERED:
         log.info('Event triggered!')
         EVENT_TRIGGERED = True
