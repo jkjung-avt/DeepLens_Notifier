@@ -14,15 +14,12 @@ import requests
 URL = 'https://notify-api.line.me/api/notify'
 
 
-def send_message(token, msg, img=''):
+def send_message(token, msg, img=None):
     """Send a LINE Notify message (with or without an image)"""
     headers = {'Authorization': 'Bearer ' + token}
     payload = {'message': msg}
-    if img:
-        file = {'imageFile': open(img, 'rb')}
-        r = requests.post(URL, headers=headers, params=payload, files=file)
-    else:
-        r = requests.post(URL, headers=headers, params=payload)
+    file = {'imageFile': open(img, 'rb')} if img else None
+    r = requests.post(URL, headers=headers, params=payload, files=file)
     return r.status_code
 
 
