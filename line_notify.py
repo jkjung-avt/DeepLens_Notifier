@@ -1,13 +1,10 @@
-"""test.py
+"""line_notify.py
 
-A simple script for testing how to send a LINE Notify message or image
+For sending a LINE Notify message (with or without image)
 
 Reference: https://engineering.linecorp.com/zh-hant/blog/using-line-notify-to-send-stickers-and-upload-images/
 """
 
-import os
-import sys
-import argparse
 import requests
 
 
@@ -15,7 +12,7 @@ URL = 'https://notify-api.line.me/api/notify'
 
 
 def send_message(token, msg, img=None):
-    """Send a LINE Notify message (with or without an image)"""
+    """Send a LINE Notify message (with or without an image)."""
     headers = {'Authorization': 'Bearer ' + token}
     payload = {'message': msg}
     file = {'imageFile': open(img, 'rb')} if img else None
@@ -24,6 +21,9 @@ def send_message(token, msg, img=None):
 
 
 def main():
+    import os
+    import sys
+    import argparse
     try:
         token = os.environ['LINE_TOKEN']
     except KeyError:
