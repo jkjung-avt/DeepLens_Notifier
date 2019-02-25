@@ -2,7 +2,7 @@
 
 For sending a LINE Notify message (with or without image)
 
-Reference: https://engineering.linecorp.com/zh-hant/blog/using-line-notify-to-send-stickers-and-upload-images/
+Reference: https://engineering.linecorp.com/en/blog/using-line-notify-to-send-messages-to-line-from-the-command-line/
 """
 
 import requests
@@ -15,8 +15,10 @@ def send_message(token, msg, img=None):
     """Send a LINE Notify message (with or without an image)."""
     headers = {'Authorization': 'Bearer ' + token}
     payload = {'message': msg}
-    file = {'imageFile': open(img, 'rb')} if img else None
-    r = requests.post(URL, headers=headers, params=payload, files=file)
+    files = {'imageFile': open(img, 'rb')} if img else None
+    r = requests.post(URL, headers=headers, params=payload, files=files)
+    if files:
+        files['imageFile'].close()
     return r.status_code
 
 
